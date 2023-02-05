@@ -18,10 +18,36 @@ export default function CalculatorPage() {
       if (newNum <= 9999) {
         setLeftSide(newNum);
       }
+    } else {
+      const newNum = rightSide() ? rightSide()! * 10 + num : num;
+      if (newNum <= 9999) {
+        setRightSide(newNum);
+      }
     }
   }
 
-  function operatorInput(operator: operator) {}
+  function operatorInput(operator: operator) {
+    if (leftSide() === null) return;
+
+    if (rightSide() === null) {
+      setOperator(operator);
+      setIsOnLeftSide(false);
+    }
+  }
+
+  function getOperatorComponent(operator: operator | null) {
+    if (operator === null) return;
+
+    if (operator === "multiply") {
+      return <Icon path={xMark} class="w-6 h-6" />;
+    } else if (operator === "divide") {
+      return "÷";
+    } else if (operator === "minus") {
+      return <Icon path={minus} class="w-6 h-6" />;
+    } else if (operator === "plus") {
+      return <Icon path={plus} class="w-6 h-6" />;
+    }
+  }
 
   return (
     <main class="h-screen w-full flex flex-col items-center justify-center bg-gradient-to-r from-[#807ECE] to-[#8E7ECE] text-white">
@@ -30,33 +56,39 @@ export default function CalculatorPage() {
           <div class="flex justify-end text-[#6B6B6B] text-lg">1 + 1</div>
           <div class="flex justify-between items-center h-16">
             <div class="text-[#6B6B6B] text-2xl">=</div>
-            <div class="text-4xl">{leftSide()}</div>
+            <div class="text-4xl flex items-center">
+              {leftSide()}
+              {getOperatorComponent(operator())}
+              {rightSide()}
+            </div>
           </div>
         </div>
         <div class="grid grid-cols-4 gap-4">
           <Button>CE</Button>
           <Button>C</Button>
           <Button>%</Button>
-          <Button type="right">÷</Button>
+          <Button type="right" onClick={() => operatorInput("divide")}>
+            ÷
+          </Button>
 
           <Button onClick={() => numberInput(7)}>7</Button>
           <Button onClick={() => numberInput(8)}>8</Button>
           <Button onClick={() => numberInput(9)}>9</Button>
-          <Button type="right">
+          <Button type="right" onClick={() => operatorInput("multiply")}>
             <Icon path={xMark} class="w-6 h-6 flex justify-center mx-auto" />
           </Button>
 
           <Button onClick={() => numberInput(4)}>4</Button>
           <Button onClick={() => numberInput(5)}>5</Button>
           <Button onClick={() => numberInput(6)}>6</Button>
-          <Button type="right">
+          <Button type="right" onClick={() => operatorInput("minus")}>
             <Icon path={minus} class="w-6 h-6 flex justify-center mx-auto" />
           </Button>
 
           <Button onClick={() => numberInput(1)}>1</Button>
           <Button onClick={() => numberInput(2)}>2</Button>
           <Button onClick={() => numberInput(3)}>3</Button>
-          <Button type="right">
+          <Button type="right" onClick={() => operatorInput("plus")}>
             <Icon path={plus} class="w-6 h-6 flex justify-center mx-auto" />
           </Button>
 

@@ -3,7 +3,7 @@ import { Icon } from "solid-heroicons";
 import { minus, plus, xMark } from "solid-heroicons/solid";
 import { createSignal } from "solid-js";
 
-type operator = "multiply" | "divide" | "plus" | "minus";
+type operator = "multiply" | "divide" | "plus" | "minus" | "percentage";
 
 interface history {
   leftSide: number;
@@ -77,6 +77,9 @@ export default function CalculatorPage() {
       case "minus":
         result = leftSide()! - rightSide()!;
         break;
+      case "percentage":
+        result = +((leftSide()! / 100) * rightSide()!).toFixed(2);
+        break;
     }
     setHistory({
       leftSide: leftSide(),
@@ -95,18 +98,23 @@ export default function CalculatorPage() {
   ) {
     if (operator === null) return;
 
-    if (operator === "multiply") {
-      return (
-        <Icon path={xMark} class={shouldBeSmall ? "w-5 h-5" : "w-6 h-6"} />
-      );
-    } else if (operator === "divide") {
-      return "÷";
-    } else if (operator === "minus") {
-      return (
-        <Icon path={minus} class={shouldBeSmall ? "w-5 h-5" : "w-6 h-6"} />
-      );
-    } else if (operator === "plus") {
-      return <Icon path={plus} class={shouldBeSmall ? "w-5 h-5" : "w-6 h-6"} />;
+    switch (operator) {
+      case "multiply":
+        return (
+          <Icon path={xMark} class={shouldBeSmall ? "w-5 h-5" : "w-6 h-6"} />
+        );
+      case "divide":
+        return "÷";
+      case "minus":
+        return (
+          <Icon path={minus} class={shouldBeSmall ? "w-5 h-5" : "w-6 h-6"} />
+        );
+      case "plus":
+        return (
+          <Icon path={plus} class={shouldBeSmall ? "w-5 h-5" : "w-6 h-6"} />
+        );
+      case "percentage":
+        return "%";
     }
   }
 
@@ -143,7 +151,7 @@ export default function CalculatorPage() {
         <div class="grid grid-cols-4 gap-4">
           <Button onClick={() => clearAll()}>CE</Button>
           <Button onClick={() => clear()}>C</Button>
-          <Button>%</Button>
+          <Button onClick={() => operatorInput("percentage")}>%</Button>
           <Button type="right" onClick={() => operatorInput("divide")}>
             ÷
           </Button>

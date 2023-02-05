@@ -146,7 +146,7 @@ export default function CalculatorPage() {
           </Button>
 
           <Button>±</Button>
-          <Button>0</Button>
+          <Button onClick={() => numberInput(0)}>0</Button>
           <Button>,</Button>
           <Button type="equal" onClick={() => getResult()}>
             =

@@ -38,6 +38,10 @@ export default function CalculatorPage() {
     if (rightSide() === null) {
       setOperator(operator);
       setIsOnLeftSide(false);
+    } else {
+      getResult();
+      setOperator(operator);
+      setIsOnLeftSide(false);
     }
   }
 
@@ -46,13 +50,6 @@ export default function CalculatorPage() {
       return;
 
     let result;
-
-    console.log({
-      leftSide: leftSide(),
-      operator: operator(),
-      rightSide: rightSide(),
-    });
-
     switch (operator()) {
       case "multiply":
         result = leftSide()! * rightSide()!;

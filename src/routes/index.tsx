@@ -5,12 +5,18 @@ import { createSignal } from "solid-js";
 
 type operator = "multiply" | "divide" | "plus" | "minus";
 
+interface history {
+  leftSide: number;
+  rightSide: number;
+  operator: operator;
+}
+
 export default function CalculatorPage() {
   const [leftSide, setLeftSide] = createSignal<number | null>(null);
   const [rightSide, setRightSide] = createSignal<number | null>(null);
   const [isOnLeftSide, setIsOnLeftSide] = createSignal<boolean>(true);
   const [operator, setOperator] = createSignal<operator | null>(null);
-  const [history, setHistory] = createSignal<string | null>(null);
+  const [history, setHistory] = createSignal<history | null>(null);
 
   function numberInput(num: number) {
     if (isOnLeftSide()) {
@@ -35,28 +41,75 @@ export default function CalculatorPage() {
     }
   }
 
-  function getOperatorComponent(operator: operator | null) {
+  function getResult() {
+    if (leftSide() === null || operator() === null || rightSide() === null)
+      return;
+
+    let result;
+
+    console.log({
+      leftSide: leftSide(),
+      operator: operator(),
+      rightSide: rightSide(),
+    });
+
+    switch (operator()) {
+      case "multiply":
+        result = leftSide()! * rightSide()!;
+        break;
+      case "divide":
+        result = +(leftSide()! / rightSide()!).toFixed(2);
+        break;
+      case "plus":
+        result = leftSide()! + rightSide()!;
+        break;
+      case "minus":
+        result = leftSide()! - rightSide()!;
+        break;
+    }
+    setHistory({
+      leftSide: leftSide(),
+      operator: operator(),
+      rightSide: rightSide(),
+    } as history);
+    setLeftSide(result ?? null);
+    setOperator(null);
+    setRightSide(null);
+  }
+
+  function getOperatorComponent(
+    operator: operator | null,
+    shouldBeSmall?: boolean
+  ) {
     if (operator === null) return;
 
     if (operator === "multiply") {
-      return <Icon path={xMark} class="w-6 h-6" />;
+      return (
+        <Icon path={xMark} class={shouldBeSmall ? "w-5 h-5" : "w-6 h-6"} />
+      );
     } else if (operator === "divide") {
       return "÷";
     } else if (operator === "minus") {
-      return <Icon path={minus} class="w-6 h-6" />;
+      return (
+        <Icon path={minus} class={shouldBeSmall ? "w-5 h-5" : "w-6 h-6"} />
+      );
     } else if (operator === "plus") {
-      return <Icon path={plus} class="w-6 h-6" />;
+      return <Icon path={plus} class={shouldBeSmall ? "w-5 h-5" : "w-6 h-6"} />;
     }
   }
 
   return (
     <main class="h-screen w-full flex flex-col items-center justify-center bg-gradient-to-r from-[#807ECE] to-[#8E7ECE] text-white">
       <div class="w-full max-w-sm rounded-3xl mx-auto drop-shadow-lg bg-[#2D2A37] bg-gradient-to-t from-[rgba(0,0,0,0.05)] to-[rgba(255,255,255,0.05)] p-12 grid gap-10 shadow-inner shadow-white/10">
-        <div class="grid gap-4 px-4">
-          <div class="flex justify-end text-[#6B6B6B] text-lg">1 + 1</div>
+        <div class="grid px-4">
+          <div class="flex justify-end items-center text-[#6B6B6B] text-lg h-7">
+            {history()?.leftSide}
+            {getOperatorComponent(history()?.operator ?? null, true)}
+            {history()?.rightSide}
+          </div>
           <div class="flex justify-between items-center h-16">
-            <div class="text-[#6B6B6B] text-2xl">=</div>
-            <div class="text-4xl flex items-center">
+            <div class="text-[#6B6B6B] text-2xl">{history() && "="}</div>
+            <div class="text-4xl flex items-center overflow-auto">
               {leftSide()}
               {getOperatorComponent(operator())}
               {rightSide()}
@@ -95,7 +148,9 @@ export default function CalculatorPage() {
           <Button>±</Button>
           <Button>0</Button>
           <Button>,</Button>
-          <Button type="equal">=</Button>
+          <Button type="equal" onClick={() => getResult()}>
+            =
+          </Button>
         </div>
       </div>
     </main>

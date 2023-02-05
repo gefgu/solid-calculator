@@ -19,13 +19,21 @@ export default function CalculatorPage() {
   const [history, setHistory] = createSignal<history | null>(null);
 
   function numberInput(num: number) {
+    const left = leftSide();
+    const right = rightSide();
+
+    if (left && left >= 999999) {
+      clearAll();
+      return;
+    }
+
     if (isOnLeftSide()) {
-      const newNum = leftSide() ? leftSide()! * 10 + num : num;
+      const newNum = left ? left! * 10 + num : num;
       if (newNum <= 9999) {
         setLeftSide(newNum);
       }
     } else {
-      const newNum = rightSide() ? rightSide()! * 10 + num : num;
+      const newNum = right ? right! * 10 + num : num;
       if (newNum <= 9999) {
         setRightSide(newNum);
       }
@@ -33,7 +41,13 @@ export default function CalculatorPage() {
   }
 
   function operatorInput(operator: operator) {
-    if (leftSide() === null) return;
+    const left = leftSide();
+    if (left === null) return;
+
+    if (left && left >= 999999) {
+      clearAll();
+      return;
+    }
 
     if (rightSide() === null) {
       setOperator(operator);

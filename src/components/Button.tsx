@@ -1,10 +1,17 @@
+import { JSX } from "solid-js";
+
 interface props {
-  children: string;
+  children: JSX.Element;
+  type?: "right" | "equal";
 }
 
 export default function Button(props: props) {
   return (
-    <button class="rounded-full bg-gradient-to-b from-[rgba(0,0,0,0.05)] to-[rgba(255,255,255,0.06)] bg-[#2d2a37] drop-shadow aspect-square w-full h-full shadow-inner shadow-white/10 text-lg">
+    <button
+      class={`rounded-full bg-gradient-to-b from-[rgba(0,0,0,0.05)] to-[rgba(255,255,255,0.06)] bg-[#2d2a37] drop-shadow aspect-square w-full h-full shadow-inner shadow-white/10 text-lg ${
+        props.type === "right" && "bg-[#462878] text-2xl"
+      } ${props.type === "equal" && "bg-[#7F45E2] text-2xl"}`}
+    >
       {props.children}
     </button>
   );

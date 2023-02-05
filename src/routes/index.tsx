@@ -1,4 +1,6 @@
 import Button from "~/components/Button";
+import { Icon } from "solid-heroicons";
+import { xMark } from "solid-heroicons/solid";
 
 export default function CalculatorPage() {
   return (
@@ -15,27 +17,29 @@ export default function CalculatorPage() {
           <Button>CE</Button>
           <Button>C</Button>
           <Button>%</Button>
-          <Button>÷</Button>
+          <Button type="right">÷</Button>
 
           <Button>7</Button>
           <Button>8</Button>
           <Button>9</Button>
-          <Button>X</Button>
+          <Button type="right">
+            <Icon path={xMark} class="w-5 h-5 flex justify-center mx-auto" />
+          </Button>
 
           <Button>4</Button>
           <Button>5</Button>
           <Button>6</Button>
-          <Button>-</Button>
+          <Button type="right">-</Button>
 
           <Button>1</Button>
           <Button>2</Button>
           <Button>3</Button>
-          <Button>+</Button>
+          <Button type="right">+</Button>
 
           <Button>±</Button>
           <Button>0</Button>
           <Button>,</Button>
-          <Button>=</Button>
+          <Button type="equal">=</Button>
         </div>
       </div>
     </main>

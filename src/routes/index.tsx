@@ -11,12 +11,31 @@ interface history {
   operator: operator;
 }
 
+function getNewNumber(
+  oldNumber: number | null,
+  newDigit: number,
+  isDecimal: boolean
+) {
+  if (!isDecimal) {
+    return oldNumber ? oldNumber! * 10 + newDigit : newDigit;
+  } else {
+    console.log(oldNumber?.toString());
+    const decimalPlaces = oldNumber?.toString().split(".").at(1)?.length;
+    if (oldNumber) {
+      return oldNumber + newDigit * 10 ** (-1 * ((decimalPlaces ?? 0) + 1));
+    } else {
+      return newDigit / 10;
+    }
+  }
+}
+
 export default function CalculatorPage() {
   const [leftSide, setLeftSide] = createSignal<number | null>(null);
   const [rightSide, setRightSide] = createSignal<number | null>(null);
   const [isOnLeftSide, setIsOnLeftSide] = createSignal<boolean>(true);
   const [operator, setOperator] = createSignal<operator | null>(null);
   const [history, setHistory] = createSignal<history | null>(null);
+  const [isDecimal, setIsDecimal] = createSignal<boolean>(false);
 
   function numberInput(num: number) {
     const left = leftSide();
@@ -28,12 +47,12 @@ export default function CalculatorPage() {
     }
 
     if (isOnLeftSide()) {
-      const newNum = left ? left! * 10 + num : num;
+      const newNum = getNewNumber(left, num, isDecimal());
       if (newNum <= 9999) {
         setLeftSide(newNum);
       }
     } else {
-      const newNum = right ? right! * 10 + num : num;
+      const newNum = getNewNumber(right, num, isDecimal());
       if (newNum <= 9999) {
         setRightSide(newNum);
       }
@@ -49,13 +68,12 @@ export default function CalculatorPage() {
       return;
     }
 
+    setOperator(operator);
+    setIsDecimal(false);
     if (rightSide() === null) {
-      setOperator(operator);
       setIsOnLeftSide(false);
     } else {
       getResult();
-      setOperator(operator);
-      setIsOnLeftSide(false);
     }
   }
 
@@ -90,6 +108,7 @@ export default function CalculatorPage() {
     setOperator(null);
     setRightSide(null);
     setIsOnLeftSide(true);
+    setIsDecimal(false);
   }
 
   function getOperatorComponent(
@@ -123,6 +142,7 @@ export default function CalculatorPage() {
     setLeftSide(null);
     setRightSide(null);
     setOperator(null);
+    setIsDecimal(false);
   }
 
   function clearAll() {
@@ -179,7 +199,7 @@ export default function CalculatorPage() {
 
           <Button>±</Button>
           <Button onClick={() => numberInput(0)}>0</Button>
-          <Button>,</Button>
+          <Button onClick={() => setIsDecimal(true)}>,</Button>
           <Button type="equal" onClick={() => getResult()}>
             =
           </Button>

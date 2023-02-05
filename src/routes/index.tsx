@@ -75,6 +75,7 @@ export default function CalculatorPage() {
     setLeftSide(result ?? null);
     setOperator(null);
     setRightSide(null);
+    setIsOnLeftSide(true);
   }
 
   function getOperatorComponent(
@@ -98,6 +99,18 @@ export default function CalculatorPage() {
     }
   }
 
+  function clear() {
+    setIsOnLeftSide(true);
+    setLeftSide(null);
+    setRightSide(null);
+    setOperator(null);
+  }
+
+  function clearAll() {
+    clear();
+    setHistory(null);
+  }
+
   return (
     <main class="h-screen w-full flex flex-col items-center justify-center bg-gradient-to-r from-[#807ECE] to-[#8E7ECE] text-white">
       <div class="w-full max-w-sm rounded-3xl mx-auto drop-shadow-lg bg-[#2D2A37] bg-gradient-to-t from-[rgba(0,0,0,0.05)] to-[rgba(255,255,255,0.05)] p-12 grid gap-10 shadow-inner shadow-white/10">
@@ -117,8 +130,8 @@ export default function CalculatorPage() {
           </div>
         </div>
         <div class="grid grid-cols-4 gap-4">
-          <Button>CE</Button>
-          <Button>C</Button>
+          <Button onClick={() => clearAll()}>CE</Button>
+          <Button onClick={() => clear()}>C</Button>
           <Button>%</Button>
           <Button type="right" onClick={() => operatorInput("divide")}>
             ÷
